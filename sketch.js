@@ -14,7 +14,8 @@ var envo = [];
 var sound_switch=11;
 var notebase_switch=0;
 var sclae_switch=1;
-var notename_switch=1;
+var notename_switch=0;
+var chordname_switch=1;
 
 var rKee = ['A',null,null,null,'G',null,null,'K',null,null,null,'4',null,null,'+'];
 var midKee = [null,'S','D',null,null,'H',null,null,'L',';',null,null,'5',null,null];
@@ -22,8 +23,6 @@ var lKee = [null,null,null,'F',null,null,'J',null,null,null,"'",null,null,'6',nu
 var blKee = ['W','E','R',null,'Y','U',null,'O','P','[',null,'8','9',null,null];
 var w_Kee = ['F','G','A','B','C','D','E','F','G','A','B','C','D','E','F'];
 var b_Kee = ['A',null,null,null,'G',null,null,'K',null,null,null,'4',null,null,'+'];
-
-
 
 var notes=[53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77];
 var w_notes = [53,55,57,59,60,62,64,65,67,69,71,72,74,76,77];
@@ -37,6 +36,7 @@ var bnote_name=['F3#','G3#','A3#',null,'C4#','D4#',null,'F4#','G4#','A4#',null,'
 
 var w_num=0;
 var b_num=0;
+var debug_text=0;
 
 var w_note_name='';
 var b_note_name='';
@@ -45,43 +45,27 @@ let sound_radio;
 let notebase_radio;
 let scale_select;
 
+var o_scale_normal=[1,1,1,1,1,1,1,1,1,1,1,1];
+var o_scale_major=[1,0,1,0,1,1,0,1,0,1,0,1];
+var o_scale_minor=[1,0,1,1,0,1,0,1,1,0,1,0];
+var o_scale_pentatonic=[1,0,1,0,1,0,0,1,0,1,0,0];
+var o_scale_blue=[1,0,0,1,0,1,1,1,0,0,1,0];
+
 var w_scale=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var w_scale_normal=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var w_scale_major=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var w_scale_minor=[1,1,0,0,1,1,0,1,1,0,0,1,1,0,1];
-var w_scale_pentatonic=[0,1,1,0,1,1,1,0,1,1,0,1,1,1,0];
-var w_scale_blue=[1,1,0,0,1,0,0,1,1,0,0,1,0,0,1];
-
 var b_scale=[1,1,1,0,1,1,0,1,1,1,0,1,1,0,0];
-var b_scale_normal=[1,1,1,0,1,1,0,1,1,1,0,1,1,0,0];
-var b_scale_major=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-var b_scale_minor=[0,1,1,0,0,1,0,0,1,1,0,0,1,0,0];
-var b_scale_pentatonic=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-var b_scale_blue=[1,0,1,0,0,1,0,1,0,1,0,0,1,0,0];
 
-var w_chord=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var w_chord_maj=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var w_chord_min=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var w_chord_aug=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var w_chord_dim=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var w_chord_d7=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var w_chord_maj7=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var w_chord_min7=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var w_chord_dim7=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-
-var b_chord=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var b_chord_maj=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var b_chord_min=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var b_chord_aug=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var b_chord_dim=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var b_chord_d7=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var b_chord_maj7=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var b_chord_min7=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-var b_chord_dim7=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-
+var o_chord_normal=[1,1,1,1,1,1,1,1,1,1,1,1];
+var o_chord_maj=[1,0,0,0,1,0,0,1,0,0,0,0];
+var o_chord_min=[1,0,0,1,0,0,0,1,0,0,0,0];
+var o_chord_aug=[1,0,0,0,1,0,0,0,1,0,0,0];
+var o_chord_dim=[1,0,0,1,0,0,1,0,0,0,0,0];
+var o_chord_d7=[1,0,0,0,1,0,0,1,0,0,1,0];
+var o_chord_maj7=[1,0,0,0,1,0,0,1,0,0,1,0];
+var o_chord_min7=[1,0,0,1,0,0,0,1,0,0,1,0];
+var o_chord_dim7=[1,0,0,1,0,0,1,0,0,1,0,0];
 
 function setup() {
- 
+ // setupOsc(8000, 4560);
   
   createCanvas(space * 15, y_ground+y_keyboard);
 
@@ -91,7 +75,12 @@ function setup() {
   sound_radio.option('12','l_Tri');
   sound_radio.option('13','l_Sqr');
   sound_radio.option('14','l_Saw');
-  
+  sound_radio.option('21','r_piano');
+  sound_radio.option('22','r_pluck');
+  sound_radio.option('23','r_tb303');
+  sound_radio.option('24','r_saw');
+  sound_radio.option('25','r_sine');
+  sound_radio.option('26','r_fm');
   sound_radio.style('width', '1000px');
   sound_radio.size(1000,100);
   sound_radio.selected('11');
@@ -100,18 +89,18 @@ function setup() {
 
   notename_select = createSelect();
   notename_select.position(10, 50);
-  notename_select.option('C',1);
-  notename_select.option('C#',2);
-  notename_select.option('D',3);
-  notename_select.option('D#',4);
-  notename_select.option('E', 5);
-  notename_select.option('F',6);
-  notename_select.option('F#',7);
-  notename_select.option('G',8);
-  notename_select.option('G#',9);
-  notename_select.option('A', 10);
-  notename_select.option('A#', 11);
-  notename_select.option('B', 12);
+  notename_select.option('C',0);
+  notename_select.option('C#',1);
+  notename_select.option('D',2);
+  notename_select.option('D#',3);
+  notename_select.option('E', 4);
+  notename_select.option('F',5);
+  notename_select.option('F#',6);
+  notename_select.option('G',7);
+  notename_select.option('G#',8);
+  notename_select.option('A', 9);
+  notename_select.option('A#', 10);
+  notename_select.option('B', 11);
   notename_select.style('width', '100px');
   notename_select.size(50,20);
   notename_select.selected('C');
@@ -133,6 +122,7 @@ function setup() {
   
   chordname_select = createSelect();
   chordname_select.position(200, 50);
+  chordname_select.option('normal',0);
   chordname_select.option('maj',1);
   chordname_select.option('min',2);
   chordname_select.option('aug',3);
@@ -143,7 +133,7 @@ function setup() {
   chordname_select.option('dim7',8);
   chordname_select.style('width', '100px');
   chordname_select.size(100,20);
-  chordname_select.selected('maj');
+  chordname_select.selected('normal');
   textAlign(CENTER);
   chordname_select.changed(chordname_sw);  
     
@@ -159,14 +149,14 @@ function setup() {
   notebase_select.selected('0');
   textAlign(CENTER);
   notebase_select.changed(notebase_sw); 
-   
+  
   for (let j = 0; j < 25; j++) {
       envo[j]=new p5.Env();
       envo[j].setADSR(0.1, 0.3, 0.5, 0.1);
       envo[j].setRange(0.3, 0);
       osc[j]=new p5.Oscillator();
       osc[j].amp(envo[j]);
-    }
+  }
     
   for (var i = 0; i < 15; i++) {
     rSide.push(new rSideKey(i, space, rKee[i]));
@@ -174,19 +164,32 @@ function setup() {
     lSide.push(new lSideKey(i, space, lKee[i]));
     black.push(new BlackKey(i + 0.667, space, blKee[i]));
   }
+  
 }
-
 
 function draw() {
   background(255);
+  
+  let display = touches.length + ' touches';
+  text(display,185,50);
    
-  text(w_note_name, 15+(90*w_num),150);
-  text(b_note_name, 60+(90*b_num),150);
- 
-  text(notename_switch, 200,100);
+   
+  text(w_note_name, 15+(90*w_num),180);
+  text(b_note_name, 60+(90*b_num),180);
+ // text(note, 100,100);
+  text(notename_switch, 30,100); 
+  text(sclae_switch, 120,100); 
+  text(chordname_switch, 250,100); 
+  text(notebase_switch, 400,100);  
+  text(debug_text, 30,150);  
+  
+  
+  for (let i = 0; i < 15; i++) {
+    text( w_scale[i], 500+i*20,100);
+    text( b_scale[i], 500+i*20,120); 
+   }
  
 /*
-
  if(on == 144) {
    for (let i = 0; i < 15; i++) {
        if(w_notes[i]==note){
@@ -208,7 +211,6 @@ function draw() {
         }
      }
   }
-
 */
       
   for (var i = 0; i < rSide.length; i++) {
@@ -229,25 +231,19 @@ function draw() {
     fill(0, 0, 0);
     rect(width-(space/3), y_ground, (space/3), (height-y_ground) * 0.6);
     
-     for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 15; i++) {
       if(w_scale[i]==1){
-        //  rSide[i].green();
-        //  black[i].green();
-        //  mid[i].green();
-          //text('ere',(space/3)+(i*space), height - (space/3));
         fill(0,255,0);
         rect((space/3)+(i*space), height - (space),space/3,space/3,space/3);
        }
          if(b_scale[i]==1){
           fill(0,255,0);
-          rect((space*4/5)+(i*space),((height-y_ground) * 0.6+y_ground-space*2/3),space/5,space/5,space/5);
-          //text(this.kee, this.x + (this.keyWidth *0.2), ((height-y_ground) * 0.6+y_ground)  - this.size);
-        }
+          rect((space*5/6)+(i*space),((height-y_ground) * 0.6+y_ground-space),space/3,space/3,space/3);
+       }
     }
     
     fill(0,0,0);
 }
-
 
 function sound_sw(){
   sound_switch = sound_radio.value();  
@@ -295,77 +291,135 @@ function sound_sw(){
 
 function notename_sw(){
   notename_switch=notename_select.value();
-  
-  
-  
 }
 
 function scale_sw(){
    sclae_switch=scale_select.value();
    switch (sclae_switch) {
-     case '1':
-       for (let j = 0; j < 15; j++) {
-        w_scale[j]=w_scale_normal[j];
-        b_scale[j]=b_scale_normal[j];
-       } 
+    case '1':
+       transfer12to30(o_scale_normal);
        break;
     case '2':
-      for (let j = 0; j < 15; j++) {
-        w_scale[j]=w_scale_major[j];
-        b_scale[j]=b_scale_major[j];
-       } 
+       transfer12to30(o_scale_major);
        break;
     case '3':
-      for (let j = 0; j < 15; j++) {
-        w_scale[j]=w_scale_minor[j];
-        b_scale[j]=b_scale_minor[j];
-       } 
-       break;
+      transfer12to30(o_scale_minor);
+      break;
     case '4':
-      for (let j = 0; j < 15; j++) {
-        w_scale[j]=w_scale_pentatonic[j];
-        b_scale[j]=b_scale_pentatonic[j];
-       }  
-       break;
+      transfer12to30(o_scale_pentatonic);
+      break;
     case '5':
-      for (let j = 0; j < 15; j++) {
-        w_scale[j]=w_scale_blue[j];
-        b_scale[j]=b_scale_blue[j];
-       }   
-       break;
+     transfer12to30(o_scale_blue);
+     break;
     }
 }
 
-
-
 function chordname_sw(){
+  chordname_switch=chordname_select.value();
+   switch (chordname_switch) {
+    case '0':
+       transfer12to30(o_chord_normal);
+       break;
+    case '1':
+       transfer12to30(o_chord_maj);
+       break;
+    case '2':
+       transfer12to30(o_chord_min);
+       break;
+    case '3':
+      transfer12to30(o_chord_aug);
+      break;
+    case '4':
+      transfer12to30(o_chord_dim);
+      break;
+    case '5':
+     transfer12to30(o_chord_d7);
+     break;
+    case '6':
+     transfer12to30(o_chord_maj7);
+     break;
+    case '7':
+     transfer12to30(o_chord_min7);
+     break;
+    case '8':
+     transfer12to30(o_chord_dim7);
+     break;
+   }
 }
 
 function notebase_sw(){
    notebase_switch=notebase_select.value();
    switch (notebase_switch) {
-     case '-24':
-       notebase_switch=-24;
+    case '-24':
        sendOsc('/1/multitoggle_octave_k02/1/1', 1);   
        break;
     case '-12':
-       notebase_switch=-12;
        sendOsc('/1/multitoggle_octave_k02/1/2', 1);   
        break;
     case '0':
-       notebase_switch=0;
        sendOsc('/1/multitoggle_octave_k02/1/3', 1);  
        break;
     case '12':
-       notebase_switch=12;
        sendOsc('/1/multitoggle_octave_k02/1/4', 1);   
        break;
     case '24':
-       notebase_switch=24;
        sendOsc('/1/multitoggle_octave_k02/1/5', 1);   
        break;
     }
 }
+
+
+
+function transfer12to30(c){
+ if (c instanceof Array){
+    debug_text=100;
+     
+  let a=[];  
+  let b=[];
+   for (let i = 0 ; i < 25 ; i++) {
+        if((i+5-int(notename_switch))>=0){
+          a[i]=c[(i+5-int(notename_switch))%12];
+        } else {
+          a[i]=c[(i+17-int(notename_switch))%12];
+        }  
+     }
+  
+  for (let i = 29 ; i >=0 ; i--) {
+        if (i>=29){
+          b[i]=0;
+        } else if (i>27){
+          b[i]=a[i-4];
+        } else if (i==27){
+          b[i]=0;
+        }else if(i>21) {  
+          b[i]=a[i-3];
+        }else if(i==21) {  
+          b[i]=0;
+        }else if(i>13) {  
+          b[i]=a[i-2];
+        }else if(i==13) {  
+          b[i]=0;
+        } else if(i>7) {  
+          b[i]=a[i-1];
+        }else if(i==7) { 
+          b[i]=0;
+        }else {
+          b[i]=a[i];
+       }  
+    }     
+    
+       for (let i = 0 ; i < 15 ; i++) {
+       w_scale[i]=b[i*2];
+       b_scale[i]=b[i*2+1];
+     }   
+  
+ } 
+     
+}
+
+
+
+
 
 function clear_color(){
   for (let i = 0; i < 15; i++) {
@@ -421,6 +475,7 @@ function keyReleased() {
   clear_color();   
 }
 
+
 // When we click
 function mousePressed(){
   // Map mouse to the key index
@@ -463,12 +518,67 @@ function mousePressed(){
   }
 }
   
-  
+
 
 // Fade it out when we release
 function mouseReleased(){
    clear_color(); 
 }
+
+// When we touch
+function  touchStarted(){
+  // Map mouse to the key index
+  for (var i = 0; i < touches.length; i++) {
+    let a=touches[i].x;
+    let b=touches[i].y;
+    touch_play(a,b);
+ }  
+}
+
+function touch_play(a,b){
+  touch_x=a;
+  touch_y=b;
+  
+  var key_w =floor(touch_x/space);
+  var key_b =floor((touch_x-space*0.333)/space);
+       
+  if(touch_y>((height-y_ground) * 0.6+y_ground) && touch_y<y_keyboard+y_ground  && w_scale[key_w]==1){
+    rSide[key_w].red();
+    lSide[key_w].red();
+    mid[key_w].red();
+    b_note_name='';
+    w_note_name=wnote_name[key_w];
+    w_num=key_w;
+    
+          
+    if(sound_switch<20){
+      osc[key_w].start();
+      osc[key_w].freq(midiToFreq(w_notes[key_w]+int(notebase_switch)));
+      envo[key_w].play();      
+    }else{
+      osc_str='/1/push2'+str(w_notes[key_w]);
+      sendOsc(osc_str, 1);
+    }  
+}
+       
+  else if(touch_y<((height-y_ground) * 0.6+y_ground) && touch_y>y_ground && b_scale[key_b]==1){
+    black[key_b].red();
+    w_note_name='';
+    b_note_name=bnote_name[key_b];
+    b_num=key_b;
+   
+   if(sound_switch<20){
+      osc[key_b].start();
+      osc[key_b].freq(midiToFreq(b_notes[key_b]+int(notebase_switch)));
+      envo[key_b].play();      
+    }else{
+      osc_str='/1/push2'+str(b_notes[key_b]);
+      sendOsc(osc_str, 1);
+    } 
+  }
+}
+
+
 
 
 function rSideKey(start, space, kee){
@@ -560,7 +670,7 @@ function MidKey(start, space, kee) {
     
     fill(0, 0, 230);
     textSize(this.size);
-    text(this.kee, this.x + (this.keyWidth *0.4), (height) - this.size);
+    text(this.kee, this.x + (this.keyWidth *0.5), (height) - this.size);
   }
   
    this.red = function() {
@@ -614,3 +724,36 @@ function lSideKey(start, space, kee) {
 }
 
 
+
+//osc setup
+function receiveOsc(address, value) {
+  console.log("received OSC: " + address + ", " + value);
+}
+
+function sendOsc(address, value) {
+  if (isConnected) {
+    socket.emit('message', [address, value]);
+  }
+}
+
+function setupOsc(oscPortIn, oscPortOut) {
+  socket = io.connect('http://127.0.0.1:8081', { port: 8081, rememberTransport: false });
+  socket.on('connect', function() {
+    socket.emit('config', {
+      server: { port: oscPortIn,  host: '192.168.137.1'},
+      client: { port: oscPortOut, host: '192.168.137.1'}
+    });
+  });
+  socket.on('connect', function() {
+    isConnected = true;
+  });
+  socket.on('message', function(msg) {
+    if (msg[0] == '#bundle') {
+      for (var i=2; i<msg.length; i++) {
+        receiveOsc(msg[i][0], msg[i].splice(1));
+      }
+    } else {
+      receiveOsc(msg[0], msg.splice(1));
+    }
+  });
+}
